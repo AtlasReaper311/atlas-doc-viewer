@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Document Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0e0e0e;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+        }
+        .container {
+            border: 1px solid #333;
+            padding: 40px;
+            max-width: 400px;
+            background-color: #0e0e0e;
+        }
+        h1 {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            color: #000;
+            background-color: #fff;
+            padding: 15px 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: opacity 0.3s;
+        }
+        .btn:hover { opacity: 0.8; }
+        .status {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        iframe { display: none; }
+        @media screen and (min-width: 900px) {
+            body { display: block; }
+            .container { display: none; }
+            iframe { 
+                display: block; 
+                width: 100%; 
+                height: 100%; 
+                border: none; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Secure Document<br>Access</h1>
+        <a href="document.pdf" class="btn">Initialize PDF</a>
+        <div class="status">System Status: ONLINE</div>
+    </div>
+    <iframe src="document.pdf"></iframe>
+</body>
+</html>
