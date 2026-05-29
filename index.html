@@ -1,72 +1,704 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Document Viewer</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0e0e0e;
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-            overflow: hidden;
-        }
-        .container {
-            border: 1px solid #333;
-            padding: 40px;
-            max-width: 400px;
-            background-color: #0e0e0e;
-        }
-        h1 {
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-        }
-        .btn {
-            display: inline-block;
-            text-decoration: none;
-            color: #000;
-            background-color: #fff;
-            padding: 15px 30px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: opacity 0.3s;
-        }
-        .btn:hover { opacity: 0.8; }
-        .status {
-            margin-top: 20px;
-            font-size: 0.8rem;
-            color: #666;
-        }
-        iframe { display: none; }
-        @media screen and (min-width: 900px) {
-            body { display: block; }
-            .container { display: none; }
-            iframe { 
-                display: block; 
-                width: 100%; 
-                height: 100%; 
-                border: none; 
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CV — Atlas Richardson. System Architect, Audio Designer, Developer.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>CV — Atlas Systems</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0a0a0f;
+      --bg-1:       #111118;
+      --bg-2:       #1a1a24;
+      --border:     rgba(255,255,255,0.08);
+      --border-hi:  rgba(255,255,255,0.16);
+      --text:       #e8e8e0;
+      --text-dim:   #aaa9a0;
+      --text-faint: #555560;
+      --accent:     #f5a623;
+      --accent-dim: rgba(245,166,35,0.12);
+      --accent-hover: #f7b84a;
+      --green:      #4ade80;
+      --mono:       'IBM Plex Mono', monospace;
+      --serif:      'DM Serif Display', Georgia, serif;
+      --nav-h:      56px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ─────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.5rem, 5vw, 3rem);
+      z-index: 100;
+    }
+
+    .nav-wordmark {
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      color: var(--text);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nav-wordmark span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 0.35rem 1rem;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.15s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 50%; right: 50%;
+      height: 1px;
+      background: var(--accent);
+      transition: left 0.2s, right 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { left: 1rem; right: 1rem; }
+    .nav-links a.active { color: var(--text); }
+    .nav-links a.active::after { left: 1rem; right: 1rem; }
+
+    /* ── PAGE WRAPPER ────────────────────────────── */
+    main {
+      position: relative;
+      z-index: 1;
+      padding-top: var(--nav-h);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── GATE SCREEN ─────────────────────────────── */
+    #gate {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem clamp(1.5rem, 5vw, 3rem);
+      gap: 0;
+      text-align: center;
+      min-height: calc(100vh - var(--nav-h));
+    }
+
+    .gate-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.4s 0.1s ease forwards;
+    }
+
+    .gate-title {
+      font-size: clamp(22px, 4vw, 32px);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text);
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 0.4s 0.2s ease forwards;
+    }
+
+    .gate-sub {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.4s 0.3s ease forwards;
+    }
+
+    /* init button */
+    #init-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2.5rem;
+      background: var(--text);
+      color: var(--bg);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      opacity: 0;
+      animation: fadeUp 0.4s 0.4s ease forwards;
+      overflow: hidden;
+    }
+
+    #init-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    #init-btn:hover::before { transform: scaleX(1); }
+    #init-btn:hover { color: var(--bg); }
+    #init-btn:active { transform: scale(0.98); }
+
+    #init-btn span { position: relative; z-index: 1; }
+
+    #init-btn .btn-arrow {
+      position: relative;
+      z-index: 1;
+      transition: transform 0.2s;
+    }
+    #init-btn:hover .btn-arrow { transform: translateX(4px); }
+
+    /* status line */
+    .gate-status {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+      opacity: 0;
+      animation: fadeUp 0.4s 0.5s ease forwards;
+    }
+
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 3px rgba(74,222,128,0.15);
+      animation: pulse 2.5s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 3px rgba(74,222,128,0.15); }
+      50%      { box-shadow: 0 0 0 6px rgba(74,222,128,0.05); }
+    }
+
+    /* metadata row */
+    .gate-meta {
+      margin-top: 3.5rem;
+      display: flex;
+      gap: clamp(2rem, 5vw, 4rem);
+      opacity: 0;
+      animation: fadeUp 0.4s 0.6s ease forwards;
+    }
+
+    .meta-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      text-align: left;
+    }
+
+    .meta-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .meta-value {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* ── VIEWER SECTION ──────────────────────────── */
+    #viewer {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    #viewer.visible { display: flex; }
+
+    /* top bar inside viewer */
+    .viewer-bar {
+      position: sticky;
+      top: var(--nav-h);
+      z-index: 50;
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.5rem, 5vw, 3rem);
+      height: 48px;
+      gap: 1rem;
+    }
+
+    .viewer-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .viewer-doc-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .viewer-doc-name {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--text-faint);
+    }
+
+    .viewer-sep {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+    }
+
+    .viewer-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: var(--accent-dim);
+      border: 1px solid rgba(245,166,35,0.25);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    .btn-download:hover {
+      background: rgba(245,166,35,0.2);
+      border-color: rgba(245,166,35,0.5);
+      color: var(--accent-hover);
+    }
+
+    .btn-download svg {
+      width: 12px; height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .btn-close {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.75rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-faint);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-close:hover {
+      border-color: var(--border-hi);
+      color: var(--text-dim);
+    }
+
+    /* embed wrapper */
+    .embed-wrap {
+      width: 100%;
+      padding: 2rem clamp(1rem, 4vw, 3rem) 4rem;
+      display: flex;
+      justify-content: center;
+      background: var(--bg);
+    }
+
+    .embed-inner {
+      width: 100%;
+      max-width: 900px;
+      border: 1px solid var(--border);
+      box-shadow:
+        0 0 0 1px rgba(245,166,35,0.04),
+        0 24px 80px rgba(0,0,0,0.6);
+      background: var(--bg-1);
+      overflow: hidden;
+    }
+
+    .embed-inner iframe {
+      display: block;
+      width: 100%;
+      height: 80vh;
+      min-height: 600px;
+      border: none;
+    }
+
+    /* fallback for browsers that block PDF iframes */
+    .pdf-fallback {
+      display: none;
+      padding: 3rem 2rem;
+      text-align: center;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .pdf-fallback p {
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── MOBILE NAV ──────────────────────────────── */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 56px;
+      background: rgba(10,10,15,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    .mobile-nav-inner {
+      display: flex;
+      height: 100%;
+    }
+
+    .mobile-nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      text-decoration: none;
+      color: var(--text-dim);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.15s;
+    }
+
+    .mobile-nav-item:hover,
+    .mobile-nav-item.active { color: var(--accent); }
+
+    .mobile-nav-item svg {
+      width: 18px; height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── ANIMATIONS ──────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    #viewer.visible .viewer-bar,
+    #viewer.visible .embed-wrap {
+      animation: slideIn 0.35s ease forwards;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────── */
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+      .mobile-nav { display: block; }
+      main { padding-bottom: 56px; }
+
+      .gate-meta {
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: center;
+      }
+
+      .meta-cell { text-align: center; }
+
+      .viewer-doc-name { display: none; }
+      .viewer-sep { display: none; }
+
+      .embed-inner iframe {
+        height: 70vh;
+        min-height: 480px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .gate-title { letter-spacing: 0.12em; }
+      .btn-close { display: none; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Secure Document<br>Access</h1>
-        <a href="document.pdf" class="btn">Initialize PDF</a>
-        <div class="status">System Status: ONLINE</div>
+
+  <!-- ── NAV ─────────────────────────────────────── -->
+  <nav>
+    <a href="/" class="nav-wordmark">Atlas<span>_</span>Systems</a>
+    <ul class="nav-links">
+      <li><a href="/work/">Work</a></li>
+      <li><a href="/writing/">Writing</a></li>
+      <li><a href="/lab/">Lab</a></li>
+      <li><a href="/about/">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── MAIN ─────────────────────────────────────── -->
+  <main>
+
+    <!-- GATE -->
+    <section id="gate">
+      <div class="gate-label">cv.atlas-systems.uk</div>
+
+      <div class="gate-title">
+        Atlas Systems<br>Secure Document
+      </div>
+
+      <div class="gate-sub">System Architect · Audio Designer · Developer</div>
+
+      <button id="init-btn" onclick="initViewer()">
+        <span>Initialize PDF</span>
+        <svg class="btn-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+
+      <div class="gate-status">
+        <div class="status-dot"></div>
+        <span>System Status: <span style="color: var(--green); letter-spacing: 0.06em;">ONLINE</span></span>
+      </div>
+
+      <div class="gate-meta">
+        <div class="meta-cell">
+          <div class="meta-label">Document</div>
+          <div class="meta-value">Atlas_Richardson_System_Architect.pdf</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Classification</div>
+          <div class="meta-value">Public</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-label">Format</div>
+          <div class="meta-value">PDF / A4</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEWER -->
+    <section id="viewer">
+      <div class="viewer-bar">
+        <div class="viewer-bar-left">
+          <span class="viewer-doc-label">Document</span>
+          <div class="viewer-sep"></div>
+          <span class="viewer-doc-name">Atlas_Richardson_System_Architect.pdf</span>
+        </div>
+        <div class="viewer-bar-right">
+          <a
+            href="Atlas_Richardson_System_Architect.pdf"
+            download="Atlas_Richardson_System_Architect.pdf"
+            class="btn-download"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>Download</span>
+          </a>
+          <button class="btn-close" onclick="closeViewer()">✕ Close</button>
+        </div>
+      </div>
+
+      <div class="embed-wrap">
+        <div class="embed-inner">
+          <iframe
+            id="pdf-frame"
+            title="Atlas Richardson — System Architect CV"
+            src=""
+          >
+            <!-- Fallback for browsers that can't embed PDFs -->
+            <div class="pdf-fallback" style="display:flex;">
+              <p>Inline viewer unavailable in this browser.</p>
+              <a
+                href="Atlas_Richardson_System_Architect.pdf"
+                class="btn-download"
+                download
+              >
+                <svg viewBox="0 0 24 24">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download CV
+              </a>
+            </div>
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── MOBILE NAV ────────────────────────────────── -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <a href="/" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </a>
+      <a href="/work/" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Work
+      </a>
+      <a href="/writing/" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Writing
+      </a>
+      <a href="/about/" class="mobile-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        About
+      </a>
     </div>
-    <iframe src="document.pdf"></iframe>
+  </nav>
+
+  <script>
+    const PDF_PATH = 'Atlas_Richardson_System_Architect.pdf';
+
+    function initViewer() {
+      const gate   = document.getElementById('gate');
+      const viewer = document.getElementById('viewer');
+      const frame  = document.getElementById('pdf-frame');
+
+      // Lazy-load the PDF only on click — don't fetch until needed
+      frame.src = PDF_PATH;
+
+      // Animate gate out, viewer in
+      gate.style.transition   = 'opacity 0.25s ease, transform 0.25s ease';
+      gate.style.opacity      = '0';
+      gate.style.transform    = 'translateY(-8px)';
+      gate.style.pointerEvents = 'none';
+
+      setTimeout(() => {
+        gate.style.display = 'none';
+        viewer.classList.add('visible');
+        // Scroll to top of viewer bar
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 260);
+    }
+
+    function closeViewer() {
+      const gate   = document.getElementById('gate');
+      const viewer = document.getElementById('viewer');
+      const frame  = document.getElementById('pdf-frame');
+
+      viewer.classList.remove('visible');
+      frame.src = '';
+
+      gate.style.display    = 'flex';
+      gate.style.opacity    = '0';
+      gate.style.transform  = 'translateY(-8px)';
+      gate.style.pointerEvents = '';
+
+      // Re-trigger entry animation
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          gate.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+          gate.style.opacity    = '1';
+          gate.style.transform  = 'translateY(0)';
+        });
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
 </body>
 </html>
