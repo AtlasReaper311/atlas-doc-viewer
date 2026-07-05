@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: Deploy
 
 on:
   push:
@@ -7,20 +7,9 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ vars.CF_PROJECT_NAME }}
-          directory: .
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+    uses: AtlasReaper311/atlas-infra/.github/workflows/validate-static.yml@main
+    with:
+      project_name: atlas-doc-viewer
+      site_label: cv.atlas-systems.uk
+      inject_build_meta: false
+    secrets: inherit
