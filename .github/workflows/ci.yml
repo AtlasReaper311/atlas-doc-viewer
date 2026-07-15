@@ -1,0 +1,47 @@
+name: Pull request CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-validation:
+    name: Static document validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+
+      - name: Validate HTML and the required PDF contract
+        run: |
+          npx --yes html-validate@9.7.1 index.html
+          python3 - <<'PY'
+          from pathlib import Path
+
+          pdf = Path("Atlas_Reaper_System_Architect.pdf")
+          if not pdf.is_file() or pdf.stat().st_size == 0:
+              raise SystemExit("required CV PDF is missing or empty")
+          if not pdf.read_bytes().startswith(b"%PDF-"):
+              raise SystemExit("required CV file is not a PDF")
+          html = Path("index.html").read_text(encoding="utf-8")
+          if pdf.name not in html:
+              raise SystemExit("index.html does not link the required CV PDF")
+          PY
+
+      - name: Check repository links offline
+        uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411 # v2.8.0
+        with:
+          args: "--offline --no-progress --include-fragments --root-dir ${{ github.workspace }} ."
+          fail: true
