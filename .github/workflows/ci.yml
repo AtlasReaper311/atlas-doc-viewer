@@ -42,7 +42,7 @@ jobs:
           retention-days: 7
 
       - name: Enforce HTML validation result
-        if: steps.html.outcome != 'success'
+        if: ${{ steps.html.outcome != 'success' }}
         run: |
           cat html-validate-report.json
           exit 1
