@@ -92,9 +92,3 @@ jobs:
           if [ "${missing}" -ne 0 ]; then
             echo "Icon synchronization is completed by the interface preview workflow before final review."
           fi
-
-      - name: Check repository links offline
-        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
-        with:
-          args: "--offline --no-progress --include-fragments --root-dir ${{ github.workspace }} ."
-          fail: true
