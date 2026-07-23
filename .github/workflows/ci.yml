@@ -25,9 +25,30 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Validate HTML and the required PDF contract
+      - name: Validate HTML
+        id: html
+        continue-on-error: true
         run: |
-          npx --yes html-validate@9.7.1 index.html
+          set -o pipefail
+          npx --yes html-validate@9.7.1 --formatter=json index.html > html-validate-report.json
+
+      - name: Upload HTML validation report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: cv-html-validation-report
+          path: html-validate-report.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Enforce HTML validation result
+        if: steps.html.outcome != 'success'
+        run: |
+          cat html-validate-report.json
+          exit 1
+
+      - name: Validate required PDF contract
+        run: |
           python3 - <<'PY'
           from pathlib import Path
 
