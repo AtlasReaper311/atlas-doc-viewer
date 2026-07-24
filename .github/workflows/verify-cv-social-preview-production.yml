@@ -1,0 +1,54 @@
+name: Verify CV social preview production
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - ".github/workflows/verify-cv-social-preview-production.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.repository }}-verify-cv-social-preview-production-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'verify/cv-social-preview-production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Verify production CV social metadata
+        env:
+          EXPECTED_IMAGE: https://atlas-systems.uk/og/cv.png
+          EXPECTED_ALT: Atlas Reaper: engineering CV. // Atlas Systems
+        run: |
+          set -euo pipefail
+          output="${RUNNER_TEMP}/cv-production.html"
+          for attempt in $(seq 1 60)
+          do
+            if curl --fail --silent --show-error --location \
+              --connect-timeout 10 --max-time 30 \
+              -H 'Cache-Control: no-cache' \
+              -H 'Pragma: no-cache' \
+              "https://cv.atlas-systems.uk/?social-check=${GITHUB_SHA}-${attempt}" \
+              --output "${output}"
+            then
+              if grep -Fq "property=\"og:image\" content=\"${EXPECTED_IMAGE}\"" "${output}" && \
+                 grep -Fq "name=\"twitter:image\" content=\"${EXPECTED_IMAGE}\"" "${output}" && \
+                 grep -Fq "property=\"og:image:alt\" content=\"${EXPECTED_ALT}\"" "${output}" && \
+                 grep -Fq "name=\"twitter:image:alt\" content=\"${EXPECTED_ALT}\"" "${output}"
+              then
+                echo "CV production metadata verified on attempt ${attempt}"
+                exit 0
+              fi
+            fi
+            echo "Attempt ${attempt}/60: CV production metadata has not converged"
+            sleep 10
+          done
+          echo "CV production metadata did not converge within ten minutes" >&2
+          exit 1
