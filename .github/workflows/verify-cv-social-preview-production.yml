@@ -25,8 +25,8 @@ jobs:
     steps:
       - name: Verify production CV social metadata
         env:
-          EXPECTED_IMAGE: https://atlas-systems.uk/og/cv.png
-          EXPECTED_ALT: Atlas Reaper: engineering CV. // Atlas Systems
+          EXPECTED_IMAGE: "https://atlas-systems.uk/og/cv.png"
+          EXPECTED_ALT: "Atlas Reaper: engineering CV. // Atlas Systems"
         run: |
           set -euo pipefail
           output="${RUNNER_TEMP}/cv-production.html"
