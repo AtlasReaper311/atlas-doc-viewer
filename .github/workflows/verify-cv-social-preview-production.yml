@@ -1,3 +1,4 @@
+# Temporary read-only post-merge verification. This branch will not be merged.
 name: Verify CV social preview production
 
 on:
