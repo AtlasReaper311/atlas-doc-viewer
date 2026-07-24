@@ -46,6 +46,10 @@ test("CV indexing and canonical policies remain bounded", () => {
     html,
     /<link rel="canonical" href="https:\/\/cv\.atlas-systems\.uk\/">/,
   );
+  assert.match(html, /property="og:image" content="https:\/\/atlas-systems\.uk\/og\/cv\.png"/);
+  assert.match(html, /name="twitter:image" content="https:\/\/atlas-systems\.uk\/og\/cv\.png"/);
+  assert.match(html, /property="og:image:alt" content="Atlas Reaper: engineering CV\. \/\/ Atlas Systems"/);
+  assert.match(html, /name="twitter:image:alt" content="Atlas Reaper: engineering CV\. \/\/ Atlas Systems"/);
 });
 
 test("document uses one principal heading and one main landmark", () => {
