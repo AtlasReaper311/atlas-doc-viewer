@@ -70,6 +70,12 @@ npx --yes html-validate@9.7.1 index.html
 3. Update the `href` and `src` attributes to match the filename.
 4. Deploy.
 
+## Interface conformance
+
+Phase G adds a read-only document-surface declaration and pinned Atlas Infra
+validation without changing the protected PDF or viewer behaviour. See
+[`docs/PHASE-G-INTERFACE-CONFORMANCE.md`](docs/PHASE-G-INTERFACE-CONFORMANCE.md).
+
 ## How it fits into Atlas Systems
 
 This is the tooling layer that serves the CV under its own subdomain, kept
