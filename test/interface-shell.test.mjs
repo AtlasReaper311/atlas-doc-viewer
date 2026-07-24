@@ -11,7 +11,7 @@ import {
 const html = fs.readFileSync("index.html", "utf8");
 const css = fs.readFileSync("css/cv.css", "utf8");
 const kitCss = fs.readFileSync(
-  "assets/interface/v0.1.1/atlas-interface-kit.css",
+  "assets/interface/v0.2.0/atlas-interface-kit.css",
   "utf8",
 );
 const shell = fs.readFileSync("js/interface-shell.js", "utf8");
@@ -55,15 +55,33 @@ test("document uses one principal heading and one main landmark", () => {
   assert.match(html, /aria-labelledby="viewer-title"/);
 });
 
-test("repository-local Interface Kit v0.1.1 is pinned", () => {
+test("repository-local Interface Kit v0.2.0 is pinned", () => {
   assert.match(
     html,
-    /\/assets\/interface\/v0\.1\.1\/atlas-interface-kit\.css\?v=0\.1\.1/,
+    /\/assets\/interface\/v0\.2\.0\/atlas-fonts\.css\?v=0\.2\.0/,
+  );
+  assert.match(
+    html,
+    /\/assets\/interface\/v0\.2\.0\/atlas-interface-kit\.css\?v=0\.2\.0/,
   );
   assert.doesNotMatch(
     html,
     /https:\/\/[^"]*atlas-interface-kit[^"]*\.css/,
   );
+  assert.doesNotMatch(html, /fonts\.(?:googleapis|gstatic)\.com/);
+});
+
+test("Pages headers constrain the document surface without blocking its PDF", () => {
+  const headers = fs.readFileSync("_headers", "utf8");
+  assert.match(headers, /Strict-Transport-Security: max-age=63072000; includeSubDomains/);
+  assert.match(headers, /X-Frame-Options: DENY/);
+  assert.match(headers, /X-Content-Type-Options: nosniff/);
+  assert.match(headers, /Referrer-Policy: no-referrer/);
+  assert.match(headers, /Permissions-Policy: camera=\(\), geolocation=\(\), microphone=\(\), payment=\(\), usb=\(\)/);
+  assert.match(headers, /connect-src 'self' https:\/\/api\.atlas-systems\.uk/);
+  assert.match(headers, /object-src 'self'/);
+  assert.match(headers, /font-src 'self'/);
+  assert.doesNotMatch(headers, /fonts\.(?:googleapis|gstatic)\.com/);
 });
 
 test("desktop header uses the canonical five-route order", () => {

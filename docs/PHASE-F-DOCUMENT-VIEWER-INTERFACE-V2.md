@@ -14,7 +14,8 @@ not a CV-content rewrite or a PDF delivery redesign.
 
 - Governance: `AtlasReaper311/atlas-infra` accepted ADR-0008 and
   `policy/public-interface-system-v2.json`
-- Shared presentation: repository-local Atlas Interface Kit v0.1.1
+- Shared presentation: repository-local Atlas Interface Kit v0.2.0 with
+  self-hosted typefaces and pinned licence files
 - Document asset: `Atlas_Reaper_System_Architect.pdf`
 - Viewer behaviour: `js/viewer.js`
 - Estate search and aggregate status: `js/estate-search.js`,
