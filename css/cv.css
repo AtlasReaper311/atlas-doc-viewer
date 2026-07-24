@@ -468,9 +468,12 @@ button, input { font: inherit; }
 }
 
 .cv-footer a {
+  min-width: var(--atlas-touch-min);
   min-height: var(--atlas-touch-min);
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  padding-inline: var(--atlas-space-2);
   color: var(--atlas-text-dim);
   text-decoration: none;
 }

@@ -17,6 +17,10 @@ const kitCss = fs.readFileSync(
 const shell = fs.readFileSync("js/interface-shell.js", "utf8");
 const search = fs.readFileSync("js/estate-search.js", "utf8");
 const viewer = fs.readFileSync("js/viewer.js", "utf8");
+const evidence = fs.readFileSync(
+  "scripts/capture-interface-evidence.mjs",
+  "utf8",
+);
 const NOW = Date.parse("2026-07-23T08:00:00Z");
 const snapshot = (
   operational,
@@ -172,4 +176,7 @@ test("visual interaction contract includes focus and reduced motion", () => {
   assert.match(kitCss, /prefers-reduced-motion: reduce/);
   assert.match(css, /prefers-reduced-motion: reduce/);
   assert.match(css, /min-height: var\(--atlas-touch-min\)/);
+  assert.match(css, /min-width: var\(--atlas-touch-min\)/);
+  assert.match(evidence, /getAnimations\(\{ subtree: true \}\)/);
+  assert.match(evidence, /animation\.finished/);
 });

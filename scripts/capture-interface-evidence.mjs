@@ -257,6 +257,12 @@ async function runCase(browser, browserName, viewport) {
       viewer = await exerciseViewer(page);
       await page.locator("#init-btn").click();
       await page.waitForSelector("#viewer:not([hidden])");
+      await page.locator("#viewer").evaluate(async (element) => {
+        await Promise.all(
+          element.getAnimations({ subtree: true })
+            .map((animation) => animation.finished),
+        );
+      });
       const viewerAccessibility = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
         .analyze();

@@ -93,6 +93,10 @@ The exact draft-PR head must prove:
 11. screenshots and machine-readable evidence retained for 14 days and tied to
     the exact commit.
 
+Accessibility analysis runs after the short viewer-reveal transition has
+settled, so the audit measures the final token colours rather than a
+partially-transparent animation frame.
+
 ## Rollout and rollback
 
 The pull request remains draft until the exact preview is approved. Production
