@@ -43,9 +43,14 @@ mobile handoff behaviours.
 ## Tech
 
 - HTML5, CSS, and browser-native JavaScript modules
-- repository-local Atlas Interface Kit v0.1.1
+- repository-local Atlas Interface Kit v0.2.0 with self-hosted typefaces and
+  pinned font licences
 - CSS-based responsive composition plus bounded viewer state
 - Built for Cloudflare Pages (works equally on Netlify or Vercel)
+
+The committed `_headers` policy constrains framing, MIME handling, browser
+capabilities, runtime API connections, and document embedding. The local CV PDF
+remains explicitly permitted for the desktop viewer.
 
 ## Interface contract
 
