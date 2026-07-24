@@ -88,7 +88,7 @@ The exact draft-PR head must prove:
 8. canonical desktop and mobile navigation, visible focus, 44px controls, and
    fixed-bottom-navigation clearance;
 9. desktop initialise, embedded viewer, close, focus return, and download
-   contracts;
+   contracts, including clearance below the sticky estate header;
 10. mobile document-first layout without changing the native PDF handoff;
 11. screenshots and machine-readable evidence retained for 14 days and tied to
     the exact commit.

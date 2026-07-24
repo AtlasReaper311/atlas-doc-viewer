@@ -177,6 +177,7 @@ button, input { font: inherit; }
 }
 
 .document-gate {
+  scroll-margin-top: calc(56px + var(--atlas-space-3));
   min-height: min(680px, calc(100vh - 154px));
   padding: clamp(var(--atlas-space-5), 4vw, var(--atlas-space-7));
   overflow: hidden;
@@ -388,6 +389,7 @@ button, input { font: inherit; }
 .noscript-note a { color: var(--atlas-accent); }
 
 .viewer {
+  scroll-margin-top: calc(56px + var(--atlas-space-3));
   min-width: 0;
   padding: 0;
   overflow: hidden;

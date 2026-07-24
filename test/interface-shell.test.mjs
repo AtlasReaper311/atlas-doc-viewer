@@ -177,6 +177,8 @@ test("visual interaction contract includes focus and reduced motion", () => {
   assert.match(css, /prefers-reduced-motion: reduce/);
   assert.match(css, /min-height: var\(--atlas-touch-min\)/);
   assert.match(css, /min-width: var\(--atlas-touch-min\)/);
+  assert.match(css, /scroll-margin-top: calc\(56px \+ var\(--atlas-space-3\)\)/);
+  assert.match(evidence, /opened\.viewerBarTop < opened\.headerBottom/);
   assert.match(evidence, /getAnimations\(\{ subtree: true \}\)/);
   assert.match(evidence, /animation\.finished/);
 });

@@ -127,6 +127,13 @@ async function exerciseViewer(page) {
   const opened = await page.evaluate(() => ({
     gateHidden: document.querySelector("#gate")?.hidden,
     viewerHidden: document.querySelector("#viewer")?.hidden,
+    headerBottom: Math.round(
+      document.querySelector(".atlas-global-header")?.getBoundingClientRect()
+        .bottom ?? 0,
+    ),
+    viewerBarTop: Math.round(
+      document.querySelector(".viewer-bar")?.getBoundingClientRect().top ?? 0,
+    ),
     objectData: document.querySelector("#viewer-frame object")?.getAttribute("data"),
     objectType: document.querySelector("#viewer-frame object")?.getAttribute("type"),
     focus: document.activeElement?.id,
@@ -200,6 +207,7 @@ function assertCase(item) {
     const { opened, closed } = item.viewer;
     if (
       !opened.gateHidden || opened.viewerHidden ||
+      opened.viewerBarTop < opened.headerBottom ||
       opened.objectData !== "/Atlas_Reaper_System_Architect.pdf" ||
       opened.objectType !== "application/pdf" ||
       opened.focus !== "close-viewer" ||
