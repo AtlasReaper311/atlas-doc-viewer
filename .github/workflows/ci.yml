@@ -47,22 +47,22 @@ jobs:
           cat html-validate-report.json
           exit 1
 
-      - name: Validate required PDF contract
+      - name: Verify pinned interface and protected PDF
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
+          set -euo pipefail
+          node scripts/verify-interface-bundle.mjs
+          node scripts/verify-pdf-contract.mjs
 
-          pdf = Path("Atlas_Reaper_System_Architect.pdf")
-          if not pdf.is_file() or pdf.stat().st_size == 0:
-              raise SystemExit("required CV PDF is missing or empty")
-          if not pdf.read_bytes().startswith(b"%PDF-"):
-              raise SystemExit("required CV file is not a PDF")
-          html = Path("index.html").read_text(encoding="utf-8")
-          if pdf.name not in html:
-              raise SystemExit("index.html does not link the required CV PDF")
-          if '<meta name="robots" content="noindex, follow">' not in html:
-              raise SystemExit("CV page must remain noindex, follow")
-          PY
+      - name: Check JavaScript syntax
+        run: |
+          set -euo pipefail
+          node --check js/estate-search.js
+          node --check js/estate-status.js
+          node --check js/interface-shell.js
+          node --check js/viewer.js
+          node --check scripts/capture-interface-evidence.mjs
+          node --check scripts/verify-interface-bundle.mjs
+          node --check scripts/verify-pdf-contract.mjs
 
       - name: Run interface tests
         run: node --test test/*.test.mjs

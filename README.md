@@ -17,7 +17,9 @@
 ![Cloudflare Pages](https://img.shields.io/badge/cloudflare-pages-4ade80?style=flat-square&labelColor=0a0a0f)
 ![Cost](https://img.shields.io/badge/cost-%C2%A30-aaa9a0?style=flat-square&labelColor=0a0a0f)
 
-A small HTML and CSS wrapper for serving a static PDF cleanly across devices. It powers the CV at [cv.atlas-systems.uk](https://cv.atlas-systems.uk).
+A small, independently deployed document surface for serving a static PDF
+cleanly across devices. It powers the CV at
+[cv.atlas-systems.uk](https://cv.atlas-systems.uk).
 
 ## The problem
 
@@ -27,17 +29,39 @@ Mobile browsers do not render embedded PDFs reliably. On iOS Safari and Android 
 
 The wrapper switches presentation by viewport rather than by user agent, so there is no device sniffing to maintain.
 
-- **Desktop.** The PDF renders in a full-screen, borderless `iframe` for immediate viewing.
-- **Mobile.** A CSS media query (`@media screen and (max-width: 900px)`) swaps in a touch-friendly open screen that hands the file to the device's own PDF view, avoiding the blank-render behaviour.
-- **Aesthetics.** Dark and matte by default, matching the rest of Atlas Systems and keeping attention on the document.
+- **Desktop.** The PDF renders in a full-screen, borderless `object` after the
+  visitor explicitly initialises it.
+- **Mobile.** The same action hands the local PDF to the device's native viewer,
+  avoiding unreliable embedded rendering.
+- **Aesthetics.** A spacious, editorial document gate built on the pinned Atlas
+  Public Interface System v2 foundation.
 
-The state switch is CSS only; there is no heavy JavaScript to ship or break.
+The PDF remains unloaded until the visitor asks for it. A small local JavaScript
+module owns the explicit initialise, close, focus-return, desktop embed, and
+mobile handoff behaviours.
 
 ## Tech
 
-- HTML5 and CSS3 (Flexbox)
-- CSS-based state switching by viewport
+- HTML5, CSS, and browser-native JavaScript modules
+- repository-local Atlas Interface Kit v0.1.1
+- CSS-based responsive composition plus bounded viewer state
 - Built for Cloudflare Pages (works equally on Netlify or Vercel)
+
+## Interface contract
+
+Phase F preserves the CV route, PDF bytes, `noindex, follow` policy, explicit
+download, desktop embed, mobile native handoff, and independent Pages
+deployment. The accepted boundary and rollback plan are documented in
+`docs/PHASE-F-DOCUMENT-VIEWER-INTERFACE-V2.md`.
+
+Run the local contract checks with:
+
+```bash
+node scripts/verify-interface-bundle.mjs
+node scripts/verify-pdf-contract.mjs
+node --test test/*.test.mjs
+npx --yes html-validate@9.7.1 index.html
+```
 
 ## Usage
 
@@ -48,9 +72,11 @@ The state switch is CSS only; there is no heavy JavaScript to ship or break.
 
 ## How it fits into Atlas Systems
 
-This is the tooling layer that serves the CV under its own subdomain, kept separate from the main site so the document and the portfolio deploy independently. It is small on purpose; the point it proves is that a single well-chosen CSS breakpoint can solve a cross-device problem that usually gets reached for JavaScript.
+This is the tooling layer that serves the CV under its own subdomain, kept
+separate from the main site so the document and portfolio deploy independently.
+Its interface follows the estate-wide V2 contract while the PDF, route, and
+delivery behaviour remain owned by this repository.
 
 ---
 
 Part of [atlas-systems.uk](https://atlas-systems.uk)
-
