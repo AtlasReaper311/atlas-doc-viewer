@@ -113,7 +113,7 @@ async function exerciseSearch(page) {
     () => document.activeElement?.classList.contains("atlas-search-input"),
   );
   await page.keyboard.press("Escape");
-  await page.waitForSelector(".atlas-search-root[hidden]");
+  await page.waitForSelector(".atlas-search-root", { state: "hidden" });
   const focusRestored = await page.evaluate(
     () => document.activeElement?.hasAttribute("data-estate-search-open"),
   );
