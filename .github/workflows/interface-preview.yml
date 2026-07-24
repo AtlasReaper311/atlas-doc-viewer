@@ -7,113 +7,69 @@ on:
     paths:
       - ".github/workflows/interface-preview.yml"
       - ".github/workflows/ci.yml"
-      - "index.html"
+      - "README.md"
+      - "Atlas_Reaper_System_Architect.pdf"
+      - "assets/interface/**"
       - "css/cv.css"
+      - "docs/PHASE-F-DOCUMENT-VIEWER-INTERFACE-V2.md"
+      - "index.html"
       - "js/estate-search.js"
       - "js/estate-status.js"
       - "js/interface-shell.js"
       - "js/viewer.js"
+      - "scripts/capture-interface-evidence.mjs"
+      - "scripts/verify-interface-bundle.mjs"
+      - "scripts/verify-pdf-contract.mjs"
       - "site.webmanifest"
       - "test/interface-shell.test.mjs"
 
 permissions:
-  actions: write
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: ${{ github.repository }}-public-interface-preview-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
-  preview:
-    name: Validate and publish CV preview
-    if: >-
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      github.event.pull_request.head.ref == 'feat/estate-shell-v1'
+  validate:
+    name: Validate document viewer candidate
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment:
-      name: public-interface-preview
-      url: ${{ steps.deploy.outputs.atomic_url }}
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CF_PAGES_DEPLOY_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-      PROJECT_NAME: atlas-doc-viewer
-      PAGES_BRANCH: interface-pr-${{ github.event.pull_request.number }}
     steps:
-      - name: Check out preview branch
+      - name: Check out exact pull request commit
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
-
-      - name: Check out canonical browser icons
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
-        with:
-          repository: AtlasReaper311/atlas-systems
-          ref: main
-          path: .atlas-icon-source
-          sparse-checkout: |
-            favicon.ico
-            favicon_io
-          sparse-checkout-cone-mode: false
-
-      - name: Synchronize exact browser icons into the repository
-        id: icons
-        run: |
-          set -euo pipefail
-          cp .atlas-icon-source/favicon.ico favicon.ico
-          cp .atlas-icon-source/favicon_io/favicon-16x16.png favicon-16x16.png
-          cp .atlas-icon-source/favicon_io/favicon-32x32.png favicon-32x32.png
-          cp .atlas-icon-source/favicon_io/apple-touch-icon.png apple-touch-icon.png
-          cp .atlas-icon-source/favicon_io/android-chrome-192x192.png android-chrome-192x192.png
-          cp .atlas-icon-source/favicon_io/android-chrome-512x512.png android-chrome-512x512.png
-          rm -rf .atlas-icon-source
-
-          if git diff --quiet -- \
-            favicon.ico \
-            favicon-16x16.png \
-            favicon-32x32.png \
-            apple-touch-icon.png \
-            android-chrome-192x192.png \
-            android-chrome-512x512.png; then
-            echo "changed=false" >> "${GITHUB_OUTPUT}"
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add \
-              favicon.ico \
-              favicon-16x16.png \
-              favicon-32x32.png \
-              apple-touch-icon.png \
-              android-chrome-192x192.png \
-              android-chrome-512x512.png
-            git commit -m "assets: synchronize canonical browser icons"
-            git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
-            echo "changed=true" >> "${GITHUB_OUTPUT}"
-          fi
-          echo "commit=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0, Node 24
         with:
           node-version: "22"
 
-      - name: Validate CV HTML
-        run: npx --yes html-validate@9.7.1 index.html
-
-      - name: Run CV interface tests
-        run: node --test test/*.test.mjs
-
-      - name: Validate protected PDF and browser icons
+      - name: Verify pinned interface and protected PDF
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          pdf = Path("Atlas_Reaper_System_Architect.pdf")
-          if not pdf.is_file() or not pdf.read_bytes().startswith(b"%PDF-"):
-              raise SystemExit("required CV PDF is missing or invalid")
-          PY
+          node scripts/verify-interface-bundle.mjs
+          node scripts/verify-pdf-contract.mjs
+
+      - name: Validate HTML, JavaScript, and interface tests
+        run: |
+          set -euo pipefail
+          npx --yes html-validate@9.7.1 index.html
+          node --check js/estate-search.js
+          node --check js/estate-status.js
+          node --check js/interface-shell.js
+          node --check js/viewer.js
+          node --check scripts/capture-interface-evidence.mjs
+          node --check scripts/verify-interface-bundle.mjs
+          node --check scripts/verify-pdf-contract.mjs
+          node --test test/*.test.mjs
+          git diff --check
+
+      - name: Validate browser icons
+        run: |
+          set -euo pipefail
           for path in \
             favicon.ico \
             favicon-16x16.png \
@@ -121,10 +77,10 @@ jobs:
             apple-touch-icon.png \
             android-chrome-192x192.png \
             android-chrome-512x512.png \
-            site.webmanifest; do
+            site.webmanifest
+          do
             test -s "${path}"
           done
-          git diff --check
 
       - name: Check repository links offline
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
@@ -133,9 +89,44 @@ jobs:
           fail: true
 
       - name: Guard production boundary
+        env:
+          SOURCE_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
-          test "${{ github.event.pull_request.head.ref }}" = "feat/estate-shell-v1"
+          test "${{ github.event.pull_request.base.ref }}" = "main"
+          test "${SOURCE_BRANCH}" != "main"
+          test "${SOURCE_BRANCH}" != "production"
+
+  deploy-preview:
+    name: Publish isolated document preview
+    needs: validate
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: public-interface-preview
+      url: ${{ steps.deploy.outputs.preview_url }}
+    outputs:
+      preview_url: ${{ steps.deploy.outputs.preview_url }}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CF_PAGES_DEPLOY_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      PROJECT_NAME: atlas-doc-viewer
+      PAGES_BRANCH: interface-v2-pr-${{ github.event.pull_request.number }}
+    steps:
+      - name: Check out exact pull request commit
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Guard isolated Pages target
+        run: |
+          set -euo pipefail
+          test "${PAGES_BRANCH}" = "interface-v2-pr-${{ github.event.pull_request.number }}"
           test "${PAGES_BRANCH}" != "main"
           test "${PAGES_BRANCH}" != "production"
 
@@ -148,15 +139,14 @@ jobs:
             --project-name "${PROJECT_NAME}" \
             --branch "${PAGES_BRANCH}" \
             --commit-dirty=true 2>&1 | tee "${output_file}"
-          atomic_url="$(grep -Eo 'https://[A-Za-z0-9._-]+\.pages\.dev' "${output_file}" | tail -n 1)"
-          test -n "${atomic_url}"
-          echo "atomic_url=${atomic_url}" >> "${GITHUB_OUTPUT}"
+          preview_url="$(grep -Eo 'https://[A-Za-z0-9._-]+\.pages\.dev' "${output_file}" | tail -n 1)"
+          test -n "${preview_url}"
+          echo "preview_url=${preview_url}" >> "${GITHUB_OUTPUT}"
 
-      - name: Attach live preview to the draft pull request
+      - name: Attach preview to the draft pull request
         env:
           GH_TOKEN: ${{ github.token }}
-          PREVIEW_URL: ${{ steps.deploy.outputs.atomic_url }}
-          PREVIEW_COMMIT: ${{ steps.icons.outputs.commit }}
+          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
         run: |
           set -euo pipefail
           marker="<!-- atlas-public-interface-preview -->"
@@ -164,10 +154,10 @@ jobs:
           ## Live interface preview
 
           - Preview: ${PREVIEW_URL}
-          - Commit: \`${PREVIEW_COMMIT}\`
+          - Commit: \`${{ github.event.pull_request.head.sha }}\`
           - Production: unchanged
 
-          The approved browser icons were synchronized from \`atlas-systems/favicon_io\` before validation and deployment. The CV PDF content was not changed."
+          The preview is an isolated Cloudflare Pages branch. The production route, Pages project configuration, indexing policy, and protected PDF bytes are unchanged."
           existing_id="$(gh api "/repos/${GITHUB_REPOSITORY}/issues/${{ github.event.pull_request.number }}/comments" --paginate --jq ".[] | select(.body | contains(\"${marker}\")) | .id" | head -n 1)"
           if [ -n "${existing_id}" ]; then
             gh api --method PATCH "/repos/${GITHUB_REPOSITORY}/issues/comments/${existing_id}" -f body="${body}"
@@ -175,8 +165,49 @@ jobs:
             gh pr comment "${{ github.event.pull_request.number }}" --body "${body}"
           fi
 
-      - name: Validate synchronized branch head in native CI
-        if: steps.icons.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run ci.yml --ref "${{ github.event.pull_request.head.ref }}"
+  capture-evidence:
+    name: Capture document viewer browser evidence
+    needs: deploy-preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PREVIEW_URL: ${{ needs.deploy-preview.outputs.preview_url }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - name: Check out exact evidence runner
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          sparse-checkout: scripts/capture-interface-evidence.mjs
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0, Node 24
+        with:
+          node-version: "22"
+
+      - name: Install pinned browser and accessibility tooling
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/document-viewer-evidence"
+          cp scripts/capture-interface-evidence.mjs "${RUNNER_TEMP}/document-viewer-evidence/"
+          cd "${RUNNER_TEMP}/document-viewer-evidence"
+          npm init -y >/dev/null
+          npm install --save-exact playwright@1.61.1 @axe-core/playwright@4.12.1
+          npm audit --audit-level=high
+          npx playwright install --with-deps chromium firefox
+
+      - name: Capture Chrome and Firefox viewport matrix
+        working-directory: ${{ runner.temp }}/document-viewer-evidence
+        run: node capture-interface-evidence.mjs
+
+      - name: Upload exact-SHA interface evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, Node 24
+        with:
+          name: document-viewer-evidence-${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/document-viewer-evidence/evidence.json
+            ${{ runner.temp }}/document-viewer-evidence/capture-error.txt
+            ${{ runner.temp }}/document-viewer-evidence/screenshots/*.png
+          if-no-files-found: error
+          retention-days: 14

@@ -14,7 +14,7 @@ export function parseEstateStatus(data, now = Date.now()) {
   if (age < 0 || age > STATUS_STALE_AFTER_MS) {
     return { state: "unknown", detail: `Status evidence is stale. Last checked ${new Date(checkedAt).toISOString()}.` };
   }
-  if (operational === total) return { state: "nominal", detail: `${operational} of ${total} monitored components operational.` };
+  if (operational === total) return { state: "operational", detail: `${operational} of ${total} monitored components operational.` };
   if (operational > total / 2) return { state: "degraded", detail: `${operational} of ${total} monitored components operational.` };
   return { state: "unavailable", detail: `${operational} of ${total} monitored components operational.` };
 }

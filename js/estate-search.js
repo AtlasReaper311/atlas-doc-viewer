@@ -40,7 +40,7 @@ function build() {
   scrim.className = "atlas-search-scrim";
   scrim.setAttribute("aria-label", "Close estate search");
   const panel = document.createElement("section");
-  panel.className = "atlas-search-panel";
+  panel.className = "atlas-search-panel atlas-search-dialog";
   panel.setAttribute("role", "dialog");
   panel.setAttribute("aria-modal", "true");
   panel.setAttribute("aria-label", "Search the Atlas Systems estate");
@@ -61,7 +61,7 @@ function build() {
   const results = document.createElement("ol");
   results.className = "atlas-search-results";
   const close = document.createElement("button");
-  close.className = "atlas-search-close";
+  close.className = "atlas-search-close atlas-button atlas-button--secondary";
   close.type = "button";
   close.textContent = "Close";
   panel.append(heading, input, status, results, close);

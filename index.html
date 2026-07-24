@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-atlas-bottom-nav="true">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="CV for Atlas Reaper: systems architecture, audio design, local AI infrastructure, and software engineering.">
+  <meta name="description" content="CV for Atlas Reaper: systems engineering, software and AI, audio, and game development.">
   <meta name="robots" content="noindex, follow">
   <meta name="theme-color" content="#0a0a0f">
   <title>CV // Atlas Systems</title>
@@ -15,7 +15,7 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta property="og:type" content="profile">
   <meta property="og:title" content="CV // Atlas Systems">
-  <meta property="og:description" content="CV for Atlas Reaper: systems architecture, audio design, local AI infrastructure, and software engineering.">
+  <meta property="og:description" content="CV for Atlas Reaper: systems engineering, software and AI, audio, and game development.">
   <meta property="og:url" content="https://cv.atlas-systems.uk/">
   <meta property="og:site_name" content="Atlas Systems">
   <meta property="og:image" content="https://atlas-systems.uk/og-default.png">
@@ -24,64 +24,94 @@
   <meta property="og:image:alt" content="Atlas Systems: audio systems, local AI infrastructure, and deployment automation">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="CV // Atlas Systems">
-  <meta name="twitter:description" content="CV for Atlas Reaper: systems architecture, audio design, local AI infrastructure, and software engineering.">
+  <meta name="twitter:description" content="CV for Atlas Reaper: systems engineering, software and AI, audio, and game development.">
   <meta name="twitter:image" content="https://atlas-systems.uk/og-default.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/cv.css?v=20260723-interface-v1">
+  <link rel="stylesheet" href="/assets/interface/v0.1.1/atlas-interface-kit.css?v=0.1.1">
+  <link rel="stylesheet" href="/css/cv.css?v=20260724-interface-v2">
 </head>
 <body>
-  <nav class="global-nav" aria-label="Primary navigation">
-    <div class="brand-cluster">
-      <a href="https://atlas-systems.uk/" class="wordmark">Atlas<span>_</span>Systems</a>
-      <a class="estate-status" href="https://status.atlas-systems.uk/" data-state="checking" aria-label="Atlas Systems status: checking">
+  <header class="atlas-global-header cv-global-header">
+    <div class="atlas-global-header__identity cv-brand-cluster">
+      <a href="https://atlas-systems.uk/" class="cv-wordmark">ATLAS<span>_</span>SYSTEMS</a>
+      <a class="atlas-status estate-status" href="https://status.atlas-systems.uk/" data-state="checking" aria-label="Atlas Systems status: checking">
         <span class="estate-status-dot" aria-hidden="true"></span>
         <span class="estate-status-label">checking</span>
       </a>
     </div>
-    <ul class="global-links">
-      <li><a href="https://atlas-systems.uk/work/">Work</a></li>
-      <li><a href="https://atlas-systems.uk/writing/">Writing</a></li>
-      <li><a href="https://atlas-systems.uk/lab/">Lab</a></li>
-      <li><a href="https://atlas-systems.uk/about/">About</a></li>
-      <li>
-        <button class="search-trigger" type="button" data-estate-search-open aria-label="Search the estate" aria-haspopup="dialog">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.2" y2="16.2"></line></svg>
-          <span>Search</span>
-          <kbd>ctrl k</kbd>
-        </button>
-      </li>
-    </ul>
-  </nav>
+    <nav class="atlas-global-header__nav" aria-label="Primary navigation">
+      <a class="atlas-global-header__link" href="https://atlas-systems.uk/work/">Work</a>
+      <a class="atlas-global-header__link" href="https://atlas-systems.uk/writing/">Writing</a>
+      <a class="atlas-global-header__link" href="https://atlas-systems.uk/lab/">Lab</a>
+      <a class="atlas-global-header__link" href="https://atlas-systems.uk/systems/">Systems</a>
+      <a class="atlas-global-header__link" href="https://atlas-systems.uk/about/" aria-current="page">About</a>
+    </nav>
+    <div class="atlas-global-header__actions">
+      <button class="cv-search-trigger" type="button" data-estate-search-open aria-label="Search the estate" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.2" y2="16.2"></line>
+        </svg>
+        <span>Search</span>
+        <kbd>ctrl k</kbd>
+      </button>
+    </div>
+  </header>
 
-  <section class="product-strip" aria-label="CV interface identity">
-    <strong>CV</strong>
-    <span>public document viewer</span>
-    <span>noindex</span>
+  <section class="atlas-product-strip cv-product-strip" aria-label="CV interface identity">
+    <div class="cv-product-identity">
+      <strong>CV</strong>
+      <span class="atlas-badge atlas-badge--type">Public document</span>
+    </div>
+    <span class="cv-document-state"><span aria-hidden="true"></span>Ready to initialise</span>
   </section>
 
-  <main>
-    <section class="gate" id="gate" aria-labelledby="gate-title">
-      <div class="terminal-line" aria-hidden="true">atlas@cv:~$ open Atlas_Reaper_System_Architect.pdf<span class="cursor"></span></div>
-      <p class="eyebrow">cv.atlas-systems.uk // secure document</p>
-      <h1 id="gate-title">Atlas Reaper.</h1>
-      <p class="gate-role">System Architect · Audio Designer · Developer</p>
-      <p class="gate-copy">The document remains unloaded until requested. Initialise the local PDF viewer, download the file directly, or return to the wider engineering estate.</p>
+  <main class="cv-shell">
+    <section class="document-gate atlas-card atlas-card--flagship" id="gate" aria-labelledby="gate-title">
+      <div class="gate-layout">
+        <div class="gate-introduction">
+          <p class="atlas-page-intro__eyebrow">Curriculum vitae // deliberate load</p>
+          <div class="terminal-line" aria-hidden="true">atlas@cv:~$ open Atlas_Reaper_System_Architect.pdf<span class="cursor"></span></div>
+          <h1 class="atlas-page-intro__title" id="gate-title">Atlas Reaper.</h1>
+          <p class="gate-role">Systems engineering · Software and AI · Audio · Game development</p>
+          <p class="atlas-page-intro__purpose gate-copy">A concise record of the engineering work behind Atlas Systems. The document stays unloaded until requested, keeping the initial page fast and the PDF available as an explicit choice.</p>
 
-      <div class="gate-actions">
-        <button class="primary-action" id="init-btn" type="button">
-          <span>Initialize PDF</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-        <a class="secondary-action" href="/Atlas_Reaper_System_Architect.pdf" download="Atlas_Reaper_System_Architect.pdf">Download PDF</a>
+          <div class="gate-actions">
+            <button class="atlas-button atlas-button--primary" id="init-btn" type="button">
+              <span>Initialize PDF</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+            <a class="atlas-button atlas-button--secondary" href="/Atlas_Reaper_System_Architect.pdf" download="Atlas_Reaper_System_Architect.pdf">Download PDF</a>
+          </div>
+        </div>
+
+        <aside class="document-dossier" aria-label="Document summary">
+          <div class="document-sheet" aria-hidden="true">
+            <span class="document-sheet-index">01 // CV</span>
+            <strong>AR</strong>
+            <span class="document-sheet-rule"></span>
+            <span class="document-sheet-line document-sheet-line--long"></span>
+            <span class="document-sheet-line"></span>
+            <span class="document-sheet-line document-sheet-line--short"></span>
+            <span class="document-sheet-mark">PDF / A4</span>
+          </div>
+          <div class="document-dossier-copy">
+            <p>Document</p>
+            <strong>Atlas_Reaper_<wbr>System_Architect.pdf</strong>
+            <span>Local public asset · explicit viewer initialisation</span>
+          </div>
+        </aside>
       </div>
 
       <dl class="document-meta">
-        <div><dt>Document</dt><dd>Atlas_Reaper_System_Architect.pdf</dd></div>
         <div><dt>Classification</dt><dd>Public</dd></div>
         <div><dt>Format</dt><dd>PDF / A4</dd></div>
-        <div><dt>Indexing</dt><dd>Page excluded</dd></div>
+        <div><dt>Indexing</dt><dd>Viewer excluded</dd></div>
+        <div><dt>Mobile delivery</dt><dd>Native PDF handoff</dd></div>
       </dl>
 
       <noscript>
@@ -89,15 +119,15 @@
       </noscript>
     </section>
 
-    <section class="viewer" id="viewer" aria-labelledby="viewer-title" hidden>
+    <section class="viewer atlas-card" id="viewer" aria-labelledby="viewer-title" hidden>
       <header class="viewer-bar">
         <div>
-          <p class="eyebrow">Document viewer</p>
-          <h2 id="viewer-title">Atlas_Reaper_System_Architect.pdf</h2>
+          <p class="atlas-page-intro__eyebrow">Document viewer // active</p>
+          <h2 id="viewer-title">Atlas_Reaper_<wbr>System_Architect.pdf</h2>
         </div>
         <div class="viewer-actions">
-          <a class="secondary-action" href="/Atlas_Reaper_System_Architect.pdf" download="Atlas_Reaper_System_Architect.pdf">Download</a>
-          <button class="secondary-action" id="close-viewer" type="button">Close viewer</button>
+          <a class="atlas-button atlas-button--secondary" href="/Atlas_Reaper_System_Architect.pdf" download="Atlas_Reaper_System_Architect.pdf">Download</a>
+          <button class="atlas-button atlas-button--secondary" id="close-viewer" type="button">Close viewer</button>
         </div>
       </header>
       <div class="viewer-frame" id="viewer-frame"></div>
@@ -106,7 +136,7 @@
     <p class="sr-only" id="viewer-announcer" role="status" aria-live="polite" aria-atomic="true"></p>
   </main>
 
-  <footer class="cv-footer">
+  <footer class="atlas-footer cv-footer">
     <span>Atlas Systems // CV</span>
     <div>
       <a href="https://atlas-systems.uk/">Estate home</a>
@@ -115,7 +145,15 @@
     </div>
   </footer>
 
-  <script type="module" src="/js/interface-shell.js?v=20260723-interface-v1"></script>
-  <script type="module" src="/js/viewer.js?v=20260723-interface-v1"></script>
+  <nav class="atlas-bottom-nav" aria-label="Mobile estate navigation">
+    <a href="https://atlas-systems.uk/work/">Work</a>
+    <a href="https://atlas-systems.uk/writing/">Writing</a>
+    <a href="https://atlas-systems.uk/lab/">Lab</a>
+    <a href="https://atlas-systems.uk/systems/">Systems</a>
+    <a href="https://atlas-systems.uk/about/" aria-current="page">About</a>
+  </nav>
+
+  <script type="module" src="/js/interface-shell.js?v=20260724-interface-v2"></script>
+  <script type="module" src="/js/viewer.js?v=20260724-interface-v2"></script>
 </body>
 </html>
