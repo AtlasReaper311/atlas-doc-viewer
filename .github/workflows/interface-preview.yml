@@ -12,16 +12,18 @@ on:
       - "assets/interface/**"
       - "css/cv.css"
       - "docs/PHASE-F-DOCUMENT-VIEWER-INTERFACE-V2.md"
+      - "docs/PHASE-3-COMPARABLE-EVIDENCE.md"
       - "index.html"
       - "js/estate-search.js"
       - "js/estate-status.js"
       - "js/interface-shell.js"
       - "js/viewer.js"
       - "scripts/capture-interface-evidence.mjs"
+      - "scripts/capture-comparable-interface-evidence.mjs"
       - "scripts/verify-interface-bundle.mjs"
       - "scripts/verify-pdf-contract.mjs"
       - "site.webmanifest"
-      - "test/interface-shell.test.mjs"
+      - "test/**"
 
 permissions:
   contents: read
@@ -38,7 +40,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Check out exact pull request commit
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0, Node 24
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
@@ -62,6 +64,7 @@ jobs:
           node --check js/interface-shell.js
           node --check js/viewer.js
           node --check scripts/capture-interface-evidence.mjs
+          node --check scripts/capture-comparable-interface-evidence.mjs
           node --check scripts/verify-interface-bundle.mjs
           node --check scripts/verify-pdf-contract.mjs
           node --test test/*.test.mjs
@@ -118,7 +121,7 @@ jobs:
       PAGES_BRANCH: interface-v2-pr-${{ github.event.pull_request.number }}
     steps:
       - name: Check out exact pull request commit
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0, Node 24
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
@@ -157,7 +160,7 @@ jobs:
           - Commit: \`${{ github.event.pull_request.head.sha }}\`
           - Production: unchanged
 
-          The preview is an isolated Cloudflare Pages branch. The production route, Pages project configuration, indexing policy, and protected PDF bytes are unchanged."
+          The preview is an isolated Cloudflare Pages branch. Product-specific and comparable evidence use this exact deployment. The production route, Pages project configuration, indexing policy, and protected PDF bytes are unchanged."
           existing_id="$(gh api "/repos/${GITHUB_REPOSITORY}/issues/${{ github.event.pull_request.number }}/comments" --paginate --jq ".[] | select(.body | contains(\"${marker}\")) | .id" | head -n 1)"
           if [ -n "${existing_id}" ]; then
             gh api --method PATCH "/repos/${GITHUB_REPOSITORY}/issues/comments/${existing_id}" -f body="${body}"
@@ -169,16 +172,19 @@ jobs:
     name: Capture document viewer browser evidence
     needs: deploy-preview
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 60
     env:
       PREVIEW_URL: ${{ needs.deploy-preview.outputs.preview_url }}
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      PRODUCT_ID: atlas-doc-viewer
     steps:
-      - name: Check out exact evidence runner
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0, Node 24
+      - name: Check out exact evidence runners
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          sparse-checkout: scripts/capture-interface-evidence.mjs
+          sparse-checkout: |
+            scripts/capture-interface-evidence.mjs
+            scripts/capture-comparable-interface-evidence.mjs
           sparse-checkout-cone-mode: false
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0, Node 24
@@ -190,15 +196,20 @@ jobs:
           set -euo pipefail
           mkdir -p "${RUNNER_TEMP}/document-viewer-evidence"
           cp scripts/capture-interface-evidence.mjs "${RUNNER_TEMP}/document-viewer-evidence/"
+          cp scripts/capture-comparable-interface-evidence.mjs "${RUNNER_TEMP}/document-viewer-evidence/"
           cd "${RUNNER_TEMP}/document-viewer-evidence"
           npm init -y >/dev/null
           npm install --save-exact playwright@1.61.1 @axe-core/playwright@4.12.1
           npm audit --audit-level=high
           npx playwright install --with-deps chromium firefox
 
-      - name: Capture Chrome and Firefox viewport matrix
+      - name: Capture product-specific Chrome and Firefox matrix
         working-directory: ${{ runner.temp }}/document-viewer-evidence
         run: node capture-interface-evidence.mjs
+
+      - name: Capture comparable cross-product evidence
+        working-directory: ${{ runner.temp }}/document-viewer-evidence
+        run: node capture-comparable-interface-evidence.mjs
 
       - name: Upload exact-SHA interface evidence
         if: always()
@@ -209,5 +220,8 @@ jobs:
             ${{ runner.temp }}/document-viewer-evidence/evidence.json
             ${{ runner.temp }}/document-viewer-evidence/capture-error.txt
             ${{ runner.temp }}/document-viewer-evidence/screenshots/*.png
+            ${{ runner.temp }}/document-viewer-evidence/comparable-evidence.json
+            ${{ runner.temp }}/document-viewer-evidence/comparable-capture-error.txt
+            ${{ runner.temp }}/document-viewer-evidence/comparable-screenshots/*.png
           if-no-files-found: error
           retention-days: 14
