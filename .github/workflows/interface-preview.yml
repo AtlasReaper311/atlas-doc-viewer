@@ -3,7 +3,7 @@ name: Public interface preview
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, labeled]
     paths:
       - ".github/workflows/interface-preview.yml"
       - ".github/workflows/ci.yml"
@@ -11,6 +11,7 @@ on:
       - "Atlas_Reaper_System_Architect.pdf"
       - "assets/interface/**"
       - "css/cv.css"
+      - "css/phase-6-footer.css"
       - "docs/PHASE-F-DOCUMENT-VIEWER-INTERFACE-V2.md"
       - "docs/PHASE-3-COMPARABLE-EVIDENCE.md"
       - "index.html"
@@ -103,7 +104,9 @@ jobs:
   deploy-preview:
     name: Publish isolated document preview
     needs: validate
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(github.event.pull_request.labels.*.name, 'interface-preview-approved')
     permissions:
       contents: read
       pull-requests: write
