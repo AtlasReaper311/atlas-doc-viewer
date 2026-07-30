@@ -7,7 +7,7 @@ const css = fs.readFileSync("css/phase-6-footer.css", "utf8");
 const viewer = fs.readFileSync("js/viewer.js", "utf8");
 const workflow = fs.readFileSync(".github/workflows/interface-preview.yml", "utf8");
 
-test("CV exposes one complete product footer", () => {
+test("CV exposes one complete and bounded product footer", () => {
   const matches = html.match(/<footer\b[\s\S]*?<\/footer>/g) || [];
   assert.equal(matches.length, 1);
   const footer = matches[0];
@@ -19,18 +19,19 @@ test("CV exposes one complete product footer", () => {
   assert.match(footer, /atlas-footer__escape/);
   assert.match(footer, /Public engineering document viewer/);
   assert.match(footer, /Atlas Systems home/);
+  assert.equal((footer.match(/<a\b/g) || []).length, 4);
+  assert.doesNotMatch(footer, /Estate status/);
   assert.doesNotMatch(footer, /atlas-footer__sequence/);
 });
 
-test("footer presentation keeps a compact two-band desktop rail and the v0.4.0 responsive contract", () => {
-  assert.match(html, /phase-6-footer\.css\?v=20260730-phase-6-v1/);
+test("footer presentation keeps a single underlined desktop rail and the v0.4.0 responsive contract", () => {
+  assert.match(html, /phase-6-footer\.css\?v=20260730-phase-6-v2/);
   assert.match(css, /atlas-interface-kit v0\.4\.0/);
-  assert.match(
-    css,
-    /grid-template-areas:\s*"identity escape"\s*"context evidence"/,
-  );
+  assert.match(css, /\.cv-footer\s*\{[\s\S]*display: flex;/);
+  assert.match(css, /flex-wrap: wrap/);
   assert.match(css, /margin: var\(--atlas-space-7, 48px\) auto 0/);
-  assert.match(css, /padding: var\(--atlas-space-5, 24px\)/);
+  assert.match(css, /padding: var\(--atlas-space-4, 16px\) var\(--atlas-space-5, 24px\)/);
+  assert.match(css, /text-decoration: underline/);
   assert.match(css, /min-width: var\(--atlas-touch-min, 44px\)/);
   assert.match(css, /min-height: var\(--atlas-touch-min, 44px\)/);
   assert.match(css, /safe-area-inset-bottom/);
