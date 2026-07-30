@@ -26,7 +26,8 @@ test("footer presentation keeps the v0.4.0 responsive contract", () => {
   assert.match(html, /phase-6-footer\.css\?v=20260730-phase-6-v1/);
   assert.match(css, /atlas-interface-kit v0\.4\.0/);
   assert.match(css, /grid-template-areas:/);
-  assert.match(css, /--atlas-touch-min, 44px/);
+  assert.match(css, /min-width: var\(--atlas-touch-min, 44px\)/);
+  assert.match(css, /min-height: var\(--atlas-touch-min, 44px\)/);
   assert.match(css, /safe-area-inset-bottom/);
   assert.match(css, /@media \(max-width: 767px\)/);
   assert.match(css, /prefers-reduced-motion: reduce/);
