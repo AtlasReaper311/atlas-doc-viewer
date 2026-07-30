@@ -38,9 +38,9 @@
   <header class="atlas-global-header cv-global-header">
     <div class="atlas-global-header__identity cv-brand-cluster">
       <a href="https://atlas-systems.uk/" class="cv-wordmark">ATLAS<span>_</span>SYSTEMS</a>
-      <a class="atlas-status estate-status" href="https://status.atlas-systems.uk/" data-state="unknown" aria-label="Open Atlas Systems Status">
+      <a class="atlas-status estate-status" href="https://status.atlas-systems.uk/" data-atlas-status data-state="checking" aria-label="Atlas Systems status: Checking">
         <span class="estate-status-dot" aria-hidden="true"></span>
-        <span class="estate-status-label">Status</span>
+        <span class="estate-status-label" data-atlas-status-label>Checking</span>
       </a>
     </div>
     <nav class="atlas-global-header__nav" aria-label="Primary navigation">
@@ -84,5 +84,6 @@
     <a href="https://atlas-systems.uk/systems/">Systems</a>
     <a href="https://atlas-systems.uk/about/" aria-current="page">About</a>
   </nav>
+  <script type="module" src="/js/error-status.js"></script>
 </body>
 </html>

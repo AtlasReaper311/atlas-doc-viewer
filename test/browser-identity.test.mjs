@@ -4,6 +4,7 @@ import test from "node:test";
 
 const home = fs.readFileSync("index.html", "utf8");
 const notFound = fs.readFileSync("404.html", "utf8");
+const errorStatus = fs.readFileSync("js/error-status.js", "utf8");
 
 function assertIcons(html) {
   for (const href of [
@@ -29,7 +30,7 @@ test("CV root preserves profile metadata and indexing policy", () => {
   assertIcons(home);
 });
 
-test("CV owns a noindex error route without loading the protected document", () => {
+test("CV owns a noindex error route with bounded status and without loading the protected document", () => {
   assert.match(notFound, /<title>404 \/\/ CV \/\/ Atlas Systems<\/title>/);
   assert.match(notFound, /name="robots" content="noindex, follow"/);
   assert.doesNotMatch(notFound, /rel="canonical"/);
@@ -37,7 +38,13 @@ test("CV owns a noindex error route without loading the protected document", () 
   assert.doesNotMatch(notFound, /name="twitter:/);
   assert.doesNotMatch(notFound, /Atlas_Reaper_System_Architect\.pdf/);
   assert.doesNotMatch(notFound, /Initialize PDF/);
-  assert.doesNotMatch(notFound, /<script/);
+  assert.match(notFound, /data-atlas-status data-state="checking"/);
+  assert.match(notFound, /data-atlas-status-label>Checking<\/span>/);
+  assert.match(notFound, /<script type="module" src="\/js\/error-status\.js"><\/script>/);
+  assert.equal((notFound.match(/<script/g) || []).length, 1);
+  assert.match(errorStatus, /STATUS_ENDPOINT/);
+  assert.match(errorStatus, /parseEstateStatus/);
+  assert.doesNotMatch(errorStatus, /Atlas_Reaper_System_Architect\.pdf|Initialize PDF|embed|download/i);
   assert.match(notFound, /href="\/">Open CV gate<\/a>/);
   assert.match(notFound, /aria-current="page">About<\/a>/);
   assertIcons(notFound);
