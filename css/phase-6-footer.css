@@ -57,7 +57,7 @@
 }
 
 .cv-footer a {
-  min-width: 0;
+  min-width: var(--atlas-touch-min, 44px);
   min-height: var(--atlas-touch-min, 44px);
   display: inline-flex;
   align-items: center;
