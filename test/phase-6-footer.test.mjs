@@ -22,10 +22,15 @@ test("CV exposes one complete product footer", () => {
   assert.doesNotMatch(footer, /atlas-footer__sequence/);
 });
 
-test("footer presentation keeps the v0.4.0 responsive contract", () => {
+test("footer presentation keeps a compact two-band desktop rail and the v0.4.0 responsive contract", () => {
   assert.match(html, /phase-6-footer\.css\?v=20260730-phase-6-v1/);
   assert.match(css, /atlas-interface-kit v0\.4\.0/);
-  assert.match(css, /grid-template-areas:/);
+  assert.match(
+    css,
+    /grid-template-areas:\s*"identity escape"\s*"context evidence"/,
+  );
+  assert.match(css, /margin: var\(--atlas-space-7, 48px\) auto 0/);
+  assert.match(css, /padding: var\(--atlas-space-5, 24px\)/);
   assert.match(css, /min-width: var\(--atlas-touch-min, 44px\)/);
   assert.match(css, /min-height: var\(--atlas-touch-min, 44px\)/);
   assert.match(css, /safe-area-inset-bottom/);
