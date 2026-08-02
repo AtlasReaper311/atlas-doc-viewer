@@ -116,7 +116,7 @@ test("product and document states remain separate from estate status", () => {
   assert.match(html, /class="cv-document-state"/);
   assert.match(html, /class="atlas-status estate-status"/);
   assert.match(viewer, /setDocumentState\("Viewer active", true\)/);
-  assert.match(viewer, /setDocumentState\("Ready to initialise", false\)/);
+  assert.match(viewer, /setDocumentState\("Ready", false\)/);
 });
 
 test("public role order follows the accepted owner direction", () => {

@@ -63,7 +63,7 @@ export function closeViewer() {
   frame.replaceChildren();
   viewer.hidden = true;
   gate.hidden = false;
-  setDocumentState("Ready to initialise", false);
+  setDocumentState("Ready", false);
   announcer.textContent = "CV viewer closed.";
   gate.scrollIntoView({ block: "start", behavior: "auto" });
   initialise.focus();

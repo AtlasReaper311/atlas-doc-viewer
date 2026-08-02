@@ -129,12 +129,14 @@ button, input { font: inherit; }
   z-index: 1;
   min-height: 50px;
   border-bottom: 0;
+  overflow: hidden;
 }
 
 .cv-product-identity {
   display: flex;
   align-items: center;
   gap: var(--atlas-space-3);
+  min-width: 0;
 }
 
 .cv-product-identity > strong {
@@ -145,6 +147,7 @@ button, input { font: inherit; }
 }
 
 .cv-document-state {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   gap: var(--atlas-space-2);
@@ -635,7 +638,17 @@ body.atlas-search-open { overflow: hidden; }
   }
   .cv-search-trigger span,
   .cv-search-trigger kbd { display: none; }
-  .cv-product-strip { padding-inline: var(--atlas-space-4); }
+  .cv-product-strip {
+    gap: var(--atlas-space-3);
+    padding-inline: var(--atlas-space-4);
+  }
+  .cv-product-identity {
+    flex: 1 1 auto;
+    gap: var(--atlas-space-2);
+  }
+  .cv-product-identity > strong {
+    flex: 0 0 auto;
+  }
   .cv-shell {
     width: min(100% - 24px, var(--atlas-content));
     padding: var(--atlas-space-5) 0 var(--atlas-space-7);
@@ -664,9 +677,8 @@ body.atlas-search-open { overflow: hidden; }
 
 @media (max-width: 520px) {
   .cv-document-state {
-    width: var(--atlas-touch-min);
-    justify-content: center;
-    font-size: 0;
+    min-height: var(--atlas-touch-min);
+    justify-content: flex-end;
   }
   .document-dossier {
     grid-template-columns: minmax(0, 1fr);
