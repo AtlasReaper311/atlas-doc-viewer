@@ -101,6 +101,8 @@ test("desktop header uses the canonical five-route order", () => {
   assert.match(html, /data-estate-search-open/);
   assert.match(css, /--atlas-shell-gutter: max\(24px, calc\(\(100% - 1280px\) \/ 2\)\)/);
   assert.match(css, /grid-template-columns: minmax\(230px, 1fr\) auto minmax\(230px, 1fr\)/);
+  assert.match(css, /\.cv-global-header \.atlas-global-header__nav \{ gap: 0; \}/);
+  assert.match(css, /\.cv-global-header \.atlas-global-header__link\s*\{[^}]*padding: 0\.35rem 0\.85rem;/s);
 });
 
 test("mobile navigation preserves the canonical five routes", () => {
