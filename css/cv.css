@@ -39,12 +39,12 @@ button, input { font: inherit; }
   background: color-mix(in srgb, var(--atlas-bg) 94%, transparent);
 }
 
-.cv-global-header .atlas-global-header__nav { gap: 0; }
+.cv-global-header .atlas-global-header__nav { gap: 24px; }
 
 .cv-global-header .atlas-global-header__link {
-  padding: 0.35rem 0.85rem;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  padding: 0;
+  font-size: 12px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
