@@ -11,7 +11,7 @@ import {
 const html = fs.readFileSync("index.html", "utf8");
 const css = fs.readFileSync("css/cv.css", "utf8");
 const kitCss = fs.readFileSync(
-  "assets/interface/v0.2.0/atlas-interface-kit.css",
+  "assets/interface/v0.5.0/atlas-interface-kit.css",
   "utf8",
 );
 const shell = fs.readFileSync("js/interface-shell.js", "utf8");
@@ -59,14 +59,14 @@ test("document uses one principal heading and one main landmark", () => {
   assert.match(html, /aria-labelledby="viewer-title"/);
 });
 
-test("repository-local Interface Kit v0.2.0 is pinned", () => {
+test("repository-local Interface Kit v0.5.0 is pinned", () => {
   assert.match(
     html,
-    /\/assets\/interface\/v0\.2\.0\/atlas-fonts\.css\?v=0\.2\.0/,
+    /\/assets\/interface\/v0\.5\.0\/atlas-fonts\.css\?v=0\.5\.0/,
   );
   assert.match(
     html,
-    /\/assets\/interface\/v0\.2\.0\/atlas-interface-kit\.css\?v=0\.2\.0/,
+    /\/assets\/interface\/v0\.5\.0\/atlas-interface-kit\.css\?v=0\.5\.0/,
   );
   assert.doesNotMatch(
     html,
@@ -99,6 +99,8 @@ test("desktop header uses the canonical five-route order", () => {
   assert.match(html, /class="atlas-global-header cv-global-header"/);
   assert.match(html, /class="atlas-global-header__nav"/);
   assert.match(html, /data-estate-search-open/);
+  assert.match(css, /--atlas-shell-gutter: max\(24px, calc\(\(100% - 1280px\) \/ 2\)\)/);
+  assert.match(css, /grid-template-columns: minmax\(230px, 1fr\) auto minmax\(230px, 1fr\)/);
 });
 
 test("mobile navigation preserves the canonical five routes", () => {

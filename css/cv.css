@@ -5,6 +5,7 @@ html {
   background: var(--atlas-bg);
   color-scheme: dark;
   scroll-behavior: smooth;
+  --atlas-shell-gutter: max(24px, calc((100% - 1280px) / 2));
 }
 
 body {
@@ -33,6 +34,8 @@ a { color: inherit; }
 button, input { font: inherit; }
 
 .cv-global-header {
+  grid-template-columns: minmax(230px, 1fr) auto minmax(230px, 1fr);
+  padding-inline: var(--atlas-shell-gutter);
   background: color-mix(in srgb, var(--atlas-bg) 94%, transparent);
 }
 
@@ -630,6 +633,11 @@ body.atlas-search-open { overflow: hidden; }
 }
 
 @media (max-width: 767px) {
+  .cv-global-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding-inline: var(--atlas-space-4);
+  }
+
   .cv-global-header .atlas-global-header__actions { display: flex; }
   .cv-search-trigger {
     min-width: var(--atlas-touch-min);

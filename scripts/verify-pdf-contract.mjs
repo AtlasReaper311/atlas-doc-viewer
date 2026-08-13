@@ -23,7 +23,7 @@ requireValue(
   "viewer indexing policy changed",
 );
 requireValue(
-  html.includes("/assets/interface/v0.2.0/atlas-interface-kit.css"),
+  html.includes("/assets/interface/v0.5.0/atlas-interface-kit.css"),
   "viewer does not load its repository-local pinned interface bundle",
 );
 
