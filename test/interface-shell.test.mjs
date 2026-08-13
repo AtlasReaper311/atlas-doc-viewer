@@ -97,14 +97,16 @@ test("desktop header uses the canonical five-route order", () => {
     previous = position;
   }
   assert.match(html, /class="atlas-global-header cv-global-header"/);
+  assert.match(html, /class="atlas-header__inner"/);
   assert.match(html, /class="atlas-global-header__nav"/);
   assert.match(html, /data-estate-search-open/);
-  assert.match(css, /--atlas-shell-gutter: max\(24px, calc\(\(100% - 1280px\) \/ 2\)\)/);
+  assert.match(css, /width: min\(calc\(100% - 48px\), 1280px\)/);
   assert.match(css, /grid-template-columns: minmax\(230px, 1fr\) auto minmax\(230px, 1fr\)/);
   assert.match(css, /\.cv-global-header \.atlas-global-header__nav \{ gap: 24px; \}/);
-  assert.match(css, /\.cv-global-header \.atlas-global-header__link\s*\{[^}]*padding: 0;/s);
+  assert.match(css, /\.cv-global-header \.atlas-global-header__link\s*\{[^}]*padding-inline: 12px;/s);
   assert.match(css, /\.cv-global-header \.atlas-global-header__link\s*\{[^}]*font-size: 12px;/s);
   assert.match(css, /\.cv-global-header \.atlas-global-header__link\s*\{[^}]*letter-spacing: 0\.06em;/s);
+  assert.doesNotMatch(css, /\.cv-global-header \.atlas-global-header__link\s*\{[^}]*padding:\s*0;/s);
   assert.doesNotMatch(css, /\.cv-global-header \.atlas-global-header__nav \{ gap: 0; \}/);
 });
 
