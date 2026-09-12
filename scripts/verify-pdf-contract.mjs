@@ -4,7 +4,7 @@ import fs from "node:fs";
 const PDF_NAME = "Atlas_Reaper_System_Architect.pdf";
 const EXPECTED_BYTES = 218122;
 const EXPECTED_SHA256 =
-  "PENDING_REPLACEMENT_PDF_SHA256";
+  "e797c191802996802ed565fcdbf2951b805fc6ff8466d5a9783e8b2694c7577c";
 
 function requireValue(condition, message) {
   if (!condition) throw new Error(message);
