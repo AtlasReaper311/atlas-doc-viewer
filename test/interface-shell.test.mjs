@@ -10,6 +10,7 @@ import {
 
 const html = fs.readFileSync("index.html", "utf8");
 const css = fs.readFileSync("css/cv.css", "utf8");
+const browserFixes = fs.readFileSync("css/cv-browser-fixes.css", "utf8");
 const kitCss = fs.readFileSync(
   "assets/interface/v0.5.0/atlas-interface-kit.css",
   "utf8",
@@ -75,7 +76,7 @@ test("repository-local Interface Kit v0.5.0 is pinned", () => {
   assert.doesNotMatch(html, /fonts\.(?:googleapis|gstatic)\.com/);
 });
 
-test("Pages headers constrain the document surface while permitting same-origin PDF embedding", () => {
+test("Pages headers constrain the document surface while permitting same-origin PDF framing", () => {
   const headers = fs.readFileSync("_headers", "utf8");
   assert.match(headers, /Strict-Transport-Security: max-age=63072000; includeSubDomains/);
   assert.match(headers, /X-Frame-Options: SAMEORIGIN/);
@@ -84,10 +85,12 @@ test("Pages headers constrain the document surface while permitting same-origin 
   assert.match(headers, /Permissions-Policy: camera=\(\), geolocation=\(\), microphone=\(\), payment=\(\), usb=\(\)/);
   assert.match(headers, /connect-src 'self' https:\/\/api\.atlas-systems\.uk/);
   assert.match(headers, /frame-ancestors 'self'/);
-  assert.match(headers, /object-src 'self'/);
+  assert.match(headers, /frame-src 'self'/);
+  assert.match(headers, /object-src 'none'/);
   assert.match(headers, /font-src 'self'/);
   assert.doesNotMatch(headers, /X-Frame-Options: DENY/);
   assert.doesNotMatch(headers, /frame-ancestors 'none'/);
+  assert.doesNotMatch(headers, /object-src 'self'/);
   assert.doesNotMatch(headers, /fonts\.(?:googleapis|gstatic)\.com/);
 });
 
@@ -111,6 +114,25 @@ test("desktop header uses the canonical five-route order", () => {
   assert.match(css, /\.cv-global-header \.atlas-global-header__link\s*\{[^}]*letter-spacing: 0\.06em;/s);
   assert.doesNotMatch(css, /\.cv-global-header \.atlas-global-header__link\s*\{[^}]*padding:\s*0;/s);
   assert.doesNotMatch(css, /\.cv-global-header \.atlas-global-header__nav \{ gap: 0; \}/);
+});
+
+test("tablet header compacts without changing canonical navigation", () => {
+  assert.match(
+    browserFixes,
+    /@media \(min-width: 768px\) and \(max-width: 1023px\)/,
+  );
+  assert.match(
+    browserFixes,
+    /grid-template-columns: auto minmax\(0, 1fr\) auto/,
+  );
+  assert.match(
+    browserFixes,
+    /\.cv-global-header \.atlas-global-header__nav\s*\{[^}]*gap: 4px;/s,
+  );
+  assert.match(
+    browserFixes,
+    /\.cv-search-trigger span,\s*\.cv-search-trigger kbd\s*\{\s*display: none;/s,
+  );
 });
 
 test("mobile navigation preserves the canonical five routes", () => {
@@ -168,12 +190,16 @@ test("aggregate status mapping is bounded, fresh, and fail-closed", () => {
   );
 });
 
-test("viewer preserves desktop embed and mobile native handoff", () => {
+test("viewer preserves desktop same-origin frame and mobile native handoff", () => {
   assert.match(viewer, /window\.location\.assign\(PDF_PATH\)/);
-  assert.match(viewer, /object\.type = "application\/pdf"/);
+  assert.match(viewer, /document\.createElement\("iframe"\)/);
+  assert.match(viewer, /pdfFrame\.src = PDF_PATH/);
+  assert.match(viewer, /pdfFrame\.title = "Atlas Reaper System Architect CV"/);
   assert.match(viewer, /gate\.hidden = true/);
   assert.match(viewer, /viewer\.hidden = false/);
-  assert.match(viewer, /frame\.replaceChildren\(buildPdfObject\(\)\)/);
+  assert.match(viewer, /frame\.replaceChildren\(buildPdfFrame\(\)\)/);
+  assert.match(browserFixes, /\.viewer-frame iframe/);
+  assert.doesNotMatch(viewer, /document\.createElement\("object"\)/);
 });
 
 test("viewer close restores the gate, focus, and bounded announcements", () => {
