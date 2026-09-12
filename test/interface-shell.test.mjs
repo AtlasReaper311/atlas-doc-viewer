@@ -75,16 +75,19 @@ test("repository-local Interface Kit v0.5.0 is pinned", () => {
   assert.doesNotMatch(html, /fonts\.(?:googleapis|gstatic)\.com/);
 });
 
-test("Pages headers constrain the document surface without blocking its PDF", () => {
+test("Pages headers constrain the document surface while permitting same-origin PDF embedding", () => {
   const headers = fs.readFileSync("_headers", "utf8");
   assert.match(headers, /Strict-Transport-Security: max-age=63072000; includeSubDomains/);
-  assert.match(headers, /X-Frame-Options: DENY/);
+  assert.match(headers, /X-Frame-Options: SAMEORIGIN/);
   assert.match(headers, /X-Content-Type-Options: nosniff/);
   assert.match(headers, /Referrer-Policy: no-referrer/);
   assert.match(headers, /Permissions-Policy: camera=\(\), geolocation=\(\), microphone=\(\), payment=\(\), usb=\(\)/);
   assert.match(headers, /connect-src 'self' https:\/\/api\.atlas-systems\.uk/);
+  assert.match(headers, /frame-ancestors 'self'/);
   assert.match(headers, /object-src 'self'/);
   assert.match(headers, /font-src 'self'/);
+  assert.doesNotMatch(headers, /X-Frame-Options: DENY/);
+  assert.doesNotMatch(headers, /frame-ancestors 'none'/);
   assert.doesNotMatch(headers, /fonts\.(?:googleapis|gstatic)\.com/);
 });
 
