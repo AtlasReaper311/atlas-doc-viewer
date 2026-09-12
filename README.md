@@ -29,8 +29,8 @@ Mobile browsers do not render embedded PDFs reliably. On iOS Safari and Android 
 
 The wrapper switches presentation by viewport rather than by user agent, so there is no device sniffing to maintain.
 
-- **Desktop.** The PDF renders in a full-screen, borderless `object` after the
-  visitor explicitly initialises it.
+- **Desktop.** The PDF renders in a full-screen, borderless same-origin `iframe`
+  after the visitor explicitly initialises it.
 - **Mobile.** The same action hands the local PDF to the device's native viewer,
   avoiding unreliable embedded rendering.
 - **Aesthetics.** A spacious, editorial document gate built on the pinned Atlas
@@ -49,8 +49,9 @@ mobile handoff behaviours.
 - Built for Cloudflare Pages (works equally on Netlify or Vercel)
 
 The committed `_headers` policy constrains framing, MIME handling, browser
-capabilities, runtime API connections, and document embedding. The local CV PDF
-remains explicitly permitted for the desktop viewer.
+capabilities, runtime API connections, and document embedding. Same-origin
+framing permits the local CV inside the desktop viewer while cross-origin
+framing remains blocked.
 
 ## Interface contract
 
