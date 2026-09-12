@@ -2,9 +2,9 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 
 const PDF_NAME = "Atlas_Reaper_System_Architect.pdf";
-const EXPECTED_BYTES = 233956;
+const EXPECTED_BYTES = 218171;
 const EXPECTED_SHA256 =
-  "8740f30de204ef8f18275c95a1c1abe1d975c60ae4d46dc6710e96868562fc88";
+  "bd450770fa742f555beb9c1b6b572941748015947277d0a5a19dbe31985399ce";
 
 function requireValue(condition, message) {
   if (!condition) throw new Error(message);
