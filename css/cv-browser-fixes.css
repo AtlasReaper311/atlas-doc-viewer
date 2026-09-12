@@ -1,0 +1,51 @@
+/* Browser-specific document viewer and tablet shell corrections. */
+
+.viewer-frame iframe {
+  display: block;
+  width: 100%;
+  height: calc(100vh - 230px);
+  min-height: 620px;
+  border: 0;
+  background: var(--atlas-bg-2);
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .cv-global-header .atlas-header__inner {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+
+  .cv-global-header .atlas-global-header__identity {
+    gap: 8px;
+  }
+
+  .cv-global-header .atlas-global-header__nav {
+    min-width: 0;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .cv-global-header .atlas-global-header__link {
+    padding-inline: 5px;
+    font-size: 11px;
+    letter-spacing: .04em;
+  }
+
+  .cv-search-trigger {
+    min-width: var(--atlas-touch-min);
+    justify-content: center;
+    padding-inline: var(--atlas-space-2);
+  }
+
+  .cv-search-trigger span,
+  .cv-search-trigger kbd {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .viewer-frame iframe {
+    height: calc(100vh - 250px);
+    min-height: 520px;
+  }
+}
