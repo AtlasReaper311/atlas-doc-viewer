@@ -21,27 +21,12 @@ function isMobileViewer() {
   return MOBILE_QUERY.matches || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
 }
 
-function fallbackContent() {
-  const wrapper = document.createElement("div");
-  wrapper.className = "viewer-fallback";
-  const text = document.createElement("p");
-  text.textContent = "Inline PDF rendering is unavailable in this browser.";
-  const link = document.createElement("a");
-  link.className = "secondary-action";
-  link.href = PDF_PATH;
-  link.download = "Atlas_Reaper_System_Architect.pdf";
-  link.textContent = "Download PDF";
-  wrapper.append(text, link);
-  return wrapper;
-}
-
-function buildPdfObject() {
-  const object = document.createElement("object");
-  object.data = PDF_PATH;
-  object.type = "application/pdf";
-  object.setAttribute("aria-label", "Atlas Reaper System Architect CV");
-  object.appendChild(fallbackContent());
-  return object;
+function buildPdfFrame() {
+  const pdfFrame = document.createElement("iframe");
+  pdfFrame.src = PDF_PATH;
+  pdfFrame.title = "Atlas Reaper System Architect CV";
+  pdfFrame.setAttribute("aria-label", "Atlas Reaper System Architect CV");
+  return pdfFrame;
 }
 
 export function initialiseViewer() {
@@ -50,7 +35,7 @@ export function initialiseViewer() {
     return;
   }
 
-  frame.replaceChildren(buildPdfObject());
+  frame.replaceChildren(buildPdfFrame());
   gate.hidden = true;
   viewer.hidden = false;
   setDocumentState("Viewer active", true);

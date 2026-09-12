@@ -46,11 +46,13 @@ test("CV indexing and explicit document controls remain unchanged", () => {
   assert.match(html, /id="close-viewer"/);
   assert.match(html, /id="viewer-frame"/);
   assert.match(html, /href="\/Atlas_Reaper_System_Architect\.pdf"/);
-  assert.match(html, /src="\/js\/viewer\.js\?v=20260724-interface-v2"/);
+  assert.match(html, /src="\/js\/viewer\.js\?v=20260912-firefox-inline-pdf"/);
+  assert.match(html, /href="\/css\/cv-browser-fixes\.css\?v=20260912-firefox-inline-pdf"/);
 });
 
-test("desktop embed, mobile handoff, and focus return remain viewer-owned", () => {
-  assert.match(viewer, /object\.type = "application\/pdf"/);
+test("desktop iframe, mobile handoff, and focus return remain viewer-owned", () => {
+  assert.match(viewer, /document\.createElement\("iframe"\)/);
+  assert.match(viewer, /pdfFrame\.src = PDF_PATH/);
   assert.match(viewer, /window\.location\.assign\(PDF_PATH\)/);
   assert.match(viewer, /closeButton\.focus\(\)/);
   assert.match(viewer, /initialise\.focus\(\)/);
@@ -60,6 +62,7 @@ test("desktop embed, mobile handoff, and focus return remain viewer-owned", () =
 test("CV preview provider writes require explicit approval", () => {
   assert.match(workflow, /types: \[opened, synchronize, reopened, labeled\]/);
   assert.match(workflow, /css\/phase-6-footer\.css/);
+  assert.match(workflow, /css\/cv-browser-fixes\.css/);
   assert.match(
     workflow,
     /contains\(github\.event\.pull_request\.labels\.\*\.name, 'interface-preview-approved'\)/,

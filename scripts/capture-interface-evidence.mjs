@@ -123,7 +123,7 @@ async function exerciseSearch(page) {
 async function exerciseViewer(page) {
   await page.locator("#init-btn").click();
   await page.waitForSelector("#viewer:not([hidden])");
-  await page.waitForSelector("#viewer-frame object");
+  await page.waitForSelector("#viewer-frame iframe");
   const opened = await page.evaluate(() => ({
     gateHidden: document.querySelector("#gate")?.hidden,
     viewerHidden: document.querySelector("#viewer")?.hidden,
@@ -134,8 +134,8 @@ async function exerciseViewer(page) {
     viewerBarTop: Math.round(
       document.querySelector(".viewer-bar")?.getBoundingClientRect().top ?? 0,
     ),
-    objectData: document.querySelector("#viewer-frame object")?.getAttribute("data"),
-    objectType: document.querySelector("#viewer-frame object")?.getAttribute("type"),
+    frameSrc: document.querySelector("#viewer-frame iframe")?.getAttribute("src"),
+    frameTitle: document.querySelector("#viewer-frame iframe")?.getAttribute("title"),
     focus: document.activeElement?.id,
     state: document.querySelector(".cv-document-state")?.dataset.state,
     stateText: document.querySelector(".cv-document-state")?.textContent.trim(),
@@ -145,7 +145,7 @@ async function exerciseViewer(page) {
   const closed = await page.evaluate(() => ({
     gateHidden: document.querySelector("#gate")?.hidden,
     viewerHidden: document.querySelector("#viewer")?.hidden,
-    objectCount: document.querySelectorAll("#viewer-frame object").length,
+    frameCount: document.querySelectorAll("#viewer-frame iframe").length,
     focus: document.activeElement?.id,
     state: document.querySelector(".cv-document-state")?.dataset.state,
   }));
@@ -208,8 +208,8 @@ function assertCase(item) {
     if (
       !opened.gateHidden || opened.viewerHidden ||
       opened.viewerBarTop < opened.headerBottom ||
-      opened.objectData !== "/Atlas_Reaper_System_Architect.pdf" ||
-      opened.objectType !== "application/pdf" ||
+      opened.frameSrc !== "/Atlas_Reaper_System_Architect.pdf" ||
+      opened.frameTitle !== "Atlas Reaper System Architect CV" ||
       opened.focus !== "close-viewer" ||
       opened.state !== "active"
     ) {
@@ -217,7 +217,7 @@ function assertCase(item) {
     }
     if (
       closed.gateHidden || !closed.viewerHidden ||
-      closed.objectCount !== 0 || closed.focus !== "init-btn" ||
+      closed.frameCount !== 0 || closed.focus !== "init-btn" ||
       closed.state !== "ready"
     ) {
       failures.push(`${prefix}: desktop viewer close contract failed`);

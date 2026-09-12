@@ -11,6 +11,7 @@ on:
       - "Atlas_Reaper_System_Architect.pdf"
       - "assets/interface/**"
       - "css/cv.css"
+      - "css/cv-browser-fixes.css"
       - "css/phase-6-footer.css"
       - "docs/PHASE-F-DOCUMENT-VIEWER-INTERFACE-V2.md"
       - "docs/PHASE-3-COMPARABLE-EVIDENCE.md"
